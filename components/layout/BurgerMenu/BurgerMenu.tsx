@@ -10,26 +10,12 @@ import styles from './BurgerMenu.module.scss';
 import { UserBar } from '@/components/layout/UserBar/UserBar';
 import { AuthBar } from '@/components/layout/AuthBar/AuthBar';
 import AppLogo from '@/components/auth/AppLogo';
-import { useEffect, useState } from 'react';
-
-const NAV_ITEMS = [
-    { label: 'Мій день', href: '/', icon: '/icons/calendar.svg' },
-    { label: 'Подорож', href: '/journey', icon: '/icons/journey.svg' },
-    { label: 'Щоденник', href: '/diary', icon: '/icons/diary.svg' },
-    { label: 'Профіль', href: '/profile', icon: '/icons/profile.svg' },
-];
+import { NAV_ITEMS } from '@/components/layout/navigation';
 
 export const BurgerMenu = () => {
     const { isBurgerMenuOpen, closeBurgerMenu } = useUiStore();
     const { user } = useAuthStore();
     const pathname = usePathname();
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
-
-    if (!mounted) return null;
 
     return (
         <Drawer
@@ -38,7 +24,7 @@ export const BurgerMenu = () => {
             onClose={closeBurgerMenu}
             open={isBurgerMenuOpen}
             styles={{ wrapper: { width: 335 } }}
-            closeIcon={<span className={styles.closeIcon}>✕</span>}
+            closeIcon={<span className={styles.closeIcon}>×</span>}
             className={styles.drawer}
         >
             <div className={styles.container}>
@@ -46,8 +32,8 @@ export const BurgerMenu = () => {
                     <Link href="/" className={styles.logo} onClick={closeBurgerMenu}>
                         <AppLogo className={styles.logoImg} />
                     </Link>
-                    <button className={styles.closeButton} onClick={closeBurgerMenu}>
-                        ✕
+                    <button className={styles.closeButton} onClick={closeBurgerMenu} aria-label="Закрити меню">
+                        ×
                     </button>
                 </div>
 

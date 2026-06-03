@@ -11,11 +11,8 @@
     text-decoration: none;
     display: flex;
     justify-content: center;
-}
-
-.button {
     border: none;
-    border-bottom: 4px solid var(--color-scheme-accent);
+    border-bottom: 4px solid var(--opacity-neutral-darkest-15);
     border-radius: 100px;
     padding: 10px 24px;
     width: 268px;
@@ -33,6 +30,8 @@
 
     /* Reset default button styles */
     outline: none;
+    background: var(--opacity-neutral-darkest-5);
+    color: #333;
 
     &:hover,
     &:focus-visible {
@@ -47,25 +46,14 @@
     }
 }
 
-.buttonRegister {
+.linkRegister {
     background: var(--color-scheme-foreground-alt);
     color: #333;
+    border-bottom-color: var(--color-scheme-accent);
     /* Ensuring text is visible on light pink */
 
     &:hover,
     &:focus-visible {
         background: var(--color-scheme-foreground);
-    }
-}
-
-.buttonLogin {
-    background: var(--opacity-neutral-darkest-5);
-    color: #333;
-    border: none;
-    border-bottom: 4px solid var(--opacity-neutral-darkest-15);
-
-    &:hover,
-    &:focus-visible {
-        background: var(--color-scheme-background);
     }
 }

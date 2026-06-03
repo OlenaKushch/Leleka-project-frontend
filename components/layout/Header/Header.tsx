@@ -22,7 +22,7 @@ export const Header = () => {
                 <AppLogo className={styles.header__logo_img} />
             </Link>
 
-            <button className={styles.header__burger} onClick={openBurgerMenu}>
+            <button className={styles.header__burger} onClick={openBurgerMenu} aria-label="Відкрити меню">
                 <MenuOutlined />
             </button>
         </header>

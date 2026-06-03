@@ -11,8 +11,7 @@ import { usePathname } from 'next/navigation'
 export function Layout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const isAuthPage = pathname?.startsWith('/auth')
-  const isProfileEditPage = pathname === '/profile/edit'
-  const shouldShowSidebar = !isAuthPage && !isProfileEditPage
+  const shouldShowSidebar = !isAuthPage
 
   return (
     <div className={styles.layout}>
@@ -22,7 +21,7 @@ export function Layout({ children }: { children: ReactNode }) {
 
         <div className={!shouldShowSidebar ? styles.authContent : styles.content}>
           <Header />
-          {!isProfileEditPage && <Breadcrumbs />}
+          <Breadcrumbs />
           <main className={styles.main}>{children}</main>
         </div>
       </div>

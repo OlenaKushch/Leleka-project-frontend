@@ -13,7 +13,7 @@ export const login = async (creds: UserLogin): Promise<User> => {
 }
 
 export const logout = async (): Promise<void> => {
-  return Promise.resolve()
+  await api.post('/auth/logout')
 }
 
 export const AuthService = {

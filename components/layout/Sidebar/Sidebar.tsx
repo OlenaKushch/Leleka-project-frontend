@@ -9,13 +9,7 @@ import { useAuthStore } from '@/store/auth.store';
 import { UserBar } from '@/components/layout/UserBar/UserBar';
 import { AuthBar } from '@/components/layout/AuthBar/AuthBar';
 import AppLogo from '@/components/auth/AppLogo';
-
-const NAV_ITEMS = [
-    { label: 'Мій день', href: '/', icon: '/icons/calendar.svg' },
-    { label: 'Подорож', href: '/journey', icon: '/icons/journey.svg' },
-    { label: 'Щоденник', href: '/diary', icon: '/icons/diary.svg' },
-    { label: 'Профіль', href: '/profile', icon: '/icons/profile.svg' },
-];
+import { NAV_ITEMS } from '@/components/layout/navigation';
 
 export const Sidebar = () => {
     const pathname = usePathname();

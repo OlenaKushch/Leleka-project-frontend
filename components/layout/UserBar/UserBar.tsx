@@ -6,6 +6,7 @@ import { Button, Avatar } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
 import { useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { ConfirmationModal } from '@/components/confirmation-modal/confirmation-modal.component'
 import styles from './UserBar.module.scss'
 
@@ -14,6 +15,7 @@ export const UserBar = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const queryClient = useQueryClient()
+  const router = useRouter()
 
   const getAvatarSrc = () => {
     const avatar = user?.avatar
@@ -41,12 +43,12 @@ export const UserBar = () => {
       queryClient.clear()
 
       setIsModalOpen(false)
-      window.location.href = '/auth/login'
+      router.replace('/')
     } catch (error) {
       console.error('Logout failed', error)
       clearAuth()
       queryClient.clear()
-      window.location.href = '/auth/login'
+      router.replace('/')
     } finally {
       setIsLoading(false)
     }
@@ -100,6 +102,7 @@ export const UserBar = () => {
         onConfirm={handleConfirmLogout}
         onCancel={handleCancelLogout}
         variant="danger"
+        isLoading={isLoading}
       />
     </>
   )

@@ -13,6 +13,7 @@ interface ConfirmationModalProps {
   onConfirm: () => void
   onCancel: () => void
   variant?: 'danger' | 'primary'
+  isLoading?: boolean
 }
 
 export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
@@ -24,6 +25,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   onConfirm,
   onCancel,
   variant = 'primary',
+  isLoading = false,
 }) => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -46,14 +48,15 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         {description && <p className={styles.description}>{description}</p>}
 
         <div className={styles.actions}>
-          <button className={`${styles.btn} ${styles.cancel}`} onClick={onCancel}>
+          <button className={`${styles.btn} ${styles.cancel}`} onClick={onCancel} disabled={isLoading}>
             {cancelText}
           </button>
           <button
             className={`${styles.btn} ${styles.confirm} ${styles[variant]}`}
             onClick={onConfirm}
+            disabled={isLoading}
           >
-            {confirmText}
+            {isLoading ? 'Завантаження...' : confirmText}
           </button>
         </div>
       </div>
