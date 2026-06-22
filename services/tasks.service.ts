@@ -2,8 +2,8 @@ import { apiClient } from "@/lib/apiClient";
 import { Task } from "@/types/task";
 
 export const getTasks = async (): Promise<Task[]> => {
-    const { data } = await apiClient.get<Task[]>('/tasks');
-    return data;
+  const { data } = await apiClient.get<Task[]>('/tasks')
+  return Array.isArray(data) ? data : []
 }
 
 export const createTask = async (

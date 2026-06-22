@@ -11,6 +11,7 @@ import { UserBar } from '@/components/layout/UserBar/UserBar'
 import { AuthBar } from '@/components/layout/AuthBar/AuthBar'
 import AppLogo from '@/components/auth/AppLogo'
 import { NAV_ITEMS } from '@/components/layout/navigation'
+import { isValidUser } from '@/lib/authValidation'
 
 export const BurgerMenu = () => {
   const { isBurgerMenuOpen, closeBurgerMenu } = useUiStore()
@@ -57,7 +58,7 @@ export const BurgerMenu = () => {
             {NAV_ITEMS.map(item => (
               <Link
                 key={item.href}
-                href={user ? item.href : '/auth/login'}
+                href={isValidUser(user) ? item.href : '/auth/login'}
                 className={`${styles.link} ${pathname === item.href ? styles.active : ''}`}
                 onClick={closeBurgerMenu}
               >
@@ -67,7 +68,7 @@ export const BurgerMenu = () => {
             ))}
           </nav>
 
-          <div className={styles.footer}>{user ? <UserBar /> : <AuthBar />}</div>
+          <div className={styles.footer}>{isValidUser(user) ? <UserBar /> : <AuthBar />}</div>
         </div>
       </aside>
     </>

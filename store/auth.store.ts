@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { User } from '../types/user'
+import { isValidUser } from '@/lib/authValidation'
 
 export interface AuthState {
   user: User | null
@@ -24,13 +25,15 @@ export const useAuthStore = create<AuthState>()(
           if (userData === null) {
             return { user: null, isAuthenticated: false }
           }
-          const updatedUser = state.user 
-            ? { ...state.user, ...userData } 
+          const updatedUser = state.user
+            ? { ...state.user, ...userData }
             : (userData as User)
 
+          const authenticated = isValidUser(updatedUser)
+
           return {
-            user: updatedUser,
-            isAuthenticated: !!updatedUser,
+            user: authenticated ? updatedUser : null,
+            isAuthenticated: authenticated,
           }
         }),
 
@@ -49,6 +52,9 @@ export const useAuthStore = create<AuthState>()(
         isAuthenticated: state.isAuthenticated,
       }),
       onRehydrateStorage: () => state => {
+        if (state?.user && !isValidUser(state.user)) {
+          state.clearAuth()
+        }
         state?.setHydrated(true)
       },
     }

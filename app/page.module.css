@@ -76,4 +76,18 @@
   .right {
     flex: 0 0 390px;
   }
+
+  .dashboardCard {
+    max-height: 220px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  .dashboardCardTall {
+    max-height: 420px;
+  }
+
+  .dashboardCardTasks {
+    max-height: 360px;
+  }
 }

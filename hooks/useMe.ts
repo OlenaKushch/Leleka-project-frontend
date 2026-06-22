@@ -4,8 +4,9 @@ import { useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import type { User } from '@/types/user'
+import { isValidUser } from '@/lib/authValidation'
 import { useAuthStore } from '@/store/auth.store'
-import { apiClient } from '@/lib/apiClient'
+import { fetchCurrentUser } from '@/services/users.service'
 
 export function useMe() {
   const setUser = useAuthStore(s => s.setUser)
@@ -17,8 +18,7 @@ export function useMe() {
     queryKey: ['me'],
     queryFn: async (): Promise<User | null> => {
       try {
-        const { data } = await apiClient.get<{ user?: User } & User>('/users/me')
-        return data?.user ?? data
+        return await fetchCurrentUser()
       } catch (error: unknown) {
         if (axios.isAxiosError(error) && error.response?.status === 401) {
           return null
@@ -35,7 +35,11 @@ export function useMe() {
     if (query.isLoading || query.isPlaceholderData) return
 
     if (query.data) {
-      setUser(query.data)
+      if (isValidUser(query.data)) {
+        setUser(query.data)
+      } else {
+        clearAuth()
+      }
     } else if (query.isFetched && query.data === null && !query.isFetching) {
       clearAuth()
     }

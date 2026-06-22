@@ -1,15 +1,17 @@
 import { apiClient } from '@/lib/apiClient'
+import { mapBackendUser } from '@/lib/userMapper'
 import type { User } from '@/types/user'
 import type { UserRegister, UserLogin } from '@/types/auth'
+import { fetchCurrentUser } from '@/services/users.service'
 
 export const register = async (creds: UserRegister): Promise<User> => {
-  const { data } = await apiClient.post<User>('/auth/register', creds)
-  return data
+  await apiClient.post('/auth/register', creds)
+  return fetchCurrentUser()
 }
 
 export const login = async (creds: UserLogin): Promise<User> => {
-  const { data } = await apiClient.post<User>('/auth/login', creds)
-  return data
+  await apiClient.post('/auth/login', creds)
+  return fetchCurrentUser()
 }
 
 export const logout = async (): Promise<void> => {

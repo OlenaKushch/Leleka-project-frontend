@@ -12,17 +12,16 @@ import css from './JourneyPage.module.css'
 export default function JourneyPage() {
   useProtectedRoute()
 
-  const { data, isLoading, isError, refetch } = useMyDayWeek()
+  const { data: currentWeek, isLoading, isError, refetch } = useMyDayWeek()
   const [selectedWeek, setSelectedWeek] = useState<number | null>(null)
 
-  const currentWeek = data?.weekNumber ?? null
-  const activeWeek = selectedWeek ?? currentWeek
+  const activeWeek = selectedWeek ?? currentWeek ?? null
 
   if (isLoading) {
     return <Loader variant="fullscreen" />
   }
 
-  if (isError || currentWeek === null || activeWeek === null) {
+  if (isError || typeof currentWeek !== 'number' || activeWeek === null) {
     return (
       <div className={css.errorState}>
         <p>Не вдалося завантажити поточний тиждень.</p>

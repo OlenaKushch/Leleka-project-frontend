@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import css from './JourneyDetails.module.css'
 import { apiClient } from '@/lib/apiClient'
+import { mapBabyInfo, mapMomInfo } from '@/lib/weeksMappers'
 import { Loader } from '@/components/Loader/Loader'
 import { BabyInfo, MomInfo } from '@/types/babyData'
 
@@ -36,11 +37,17 @@ export default function JourneyDetails({ weekNumber }: JourneyDetailsProps) {
       }
 
       try {
-        const res = await apiClient.get(`/weeks/me/journey/${tab}/${weekNumber}`)
+        const endpoint =
+          tab === 'baby'
+            ? `/journey/${weekNumber}/baby`
+            : `/journey/${weekNumber}/mom`
+
+        const res = await apiClient.get<BabyInfo | MomInfo>(endpoint)
+
         if (tab === 'baby') {
-          setBabyData(res.data)
+          setBabyData(mapBabyInfo(res.data as BabyInfo))
         } else {
-          setMomData(res.data)
+          setMomData(mapMomInfo(res.data as MomInfo))
         }
       } catch (e) {
         const err = e as ApiError

@@ -6,8 +6,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { Loader } from '@/components/Loader/Loader'
 import { useAuthStore } from '@/store/auth.store'
-import { apiClient } from '@/lib/apiClient'
-import type { User } from '@/types/user'
+import { fetchCurrentUser } from '@/services/users.service'
 
 function AuthCallbackContent() {
   const router = useRouter()
@@ -31,12 +30,7 @@ function AuthCallbackContent() {
 
     const completeAuth = async () => {
       try {
-        const { data } = await apiClient.get<{ user?: User } & User>('/users/me')
-        const user = data?.user ?? data
-
-        if (!user) {
-          throw new Error('Session not found')
-        }
+        const user = await fetchCurrentUser()
 
         queryClient.setQueryData(['me'], user)
         setUser(user)
