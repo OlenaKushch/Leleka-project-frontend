@@ -5,7 +5,7 @@ import { Field, Form, Formik, ErrorMessage, FormikHelpers } from 'formik'
 import * as Yup from 'yup'
 import toast from 'react-hot-toast'
 import axios from 'axios'
-import { api } from '@/app/api/client'
+import { apiClient } from '@/lib/apiClient'
 import { Emotion, DiaryEntry } from '@/interfaces/diary'
 import styles from './AddDiaryEntryForm.module.css'
 
@@ -44,7 +44,7 @@ export default function AddDiaryEntryForm({
   useEffect(() => {
     const fetchEmotions = async () => {
       try {
-        const { data } = await api.get<Emotion[]>('/emotions/emotions')
+        const { data } = await apiClient.get<Emotion[]>('/emotions/emotions')
         setAvailableEmotions(data)
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
@@ -90,9 +90,9 @@ export default function AddDiaryEntryForm({
       let response
 
       if (isEdit && initialData) {
-        response = await api.patch<DiaryEntry>(`/diaries/me/${initialData._id}`, values)
+        response = await apiClient.patch<DiaryEntry>(`/diaries/me/${initialData._id}`, values)
       } else {
-        response = await api.post<DiaryEntry>('/diaries/me', values)
+        response = await apiClient.post<DiaryEntry>('/diaries/me', values)
       }
 
       onSubmitSuccess(response.data)

@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import type { User } from '@/types/user'
 import { useAuthStore } from '@/store/auth.store'
-import { api } from '@/app/api/client'
+import { apiClient } from '@/lib/apiClient'
 
 export function useMe() {
   const setUser = useAuthStore(s => s.setUser)
@@ -16,7 +16,7 @@ export function useMe() {
     
     queryFn: async (): Promise<User | null> => {
       try {
-        const { data } = await api.get<{ user?: User } & User>('/users/me')
+        const { data } = await apiClient.get<{ user?: User } & User>('/users/me')
         
         return data?.user ?? data
       } catch (error: unknown) {

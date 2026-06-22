@@ -6,7 +6,7 @@ import { GreetingBlock } from '@/components/GreetingBlock/GreetingBlock'
 import JourneyDetails from '@/components/JourneyDetails/JourneyDetails'
 import WeekSelector from '@/components/WeekSelector/WeekSelector'
 import css from './JourneyPage.module.css'
-import { api } from '@/app/api/client' // той самий, що в JourneyDetails
+import { apiClient } from '@/lib/apiClient'
 import type { WeekData } from '@/types/babyData'
 import { Loader } from '@/components/Loader/Loader'
 
@@ -20,7 +20,7 @@ export default function JourneyPage() {
   useEffect(() => {
     const loadWeek = async () => {
       setError(null)
-      const res = await api.get<WeekData>('/weeks/me/my-day')
+      const res = await apiClient.get<WeekData>('/weeks/me/my-day')
       setCurrentWeek(res.data.weekNumber)
       setSelectedWeek(res.data.weekNumber)
     }

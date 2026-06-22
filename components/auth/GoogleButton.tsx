@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import { getGoogleAuthUrl } from '@/lib/apiConfig'
 import css from './GoogleButton.module.css'
 
 type GoogleButtonProps = {
@@ -9,7 +9,7 @@ type GoogleButtonProps = {
 
 export function GoogleButton({ mode }: GoogleButtonProps) {
   return (
-    <Link href={`/api/auth/google?mode=${mode}`} className={css.googleButton}>
+    <a href={getGoogleAuthUrl(mode)} className={css.googleButton}>
       <svg className={css.googleIcon} viewBox="0 0 24 24" aria-hidden="true">
         <path
           fill="#4285F4"
@@ -29,6 +29,6 @@ export function GoogleButton({ mode }: GoogleButtonProps) {
         />
       </svg>
       {mode === 'login' ? 'Увійти через Google' : 'Зареєструватись через Google'}
-    </Link>
+    </a>
   )
 }

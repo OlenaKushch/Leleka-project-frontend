@@ -1,16 +1,13 @@
 import type { NextConfig } from 'next'
-
-const defaultApiUrl = 'https://stork-helpers-api.onrender.com/api'
+import { API_URL } from './lib/apiConfig'
 
 function getApiHostname(): string {
   try {
-    return new URL(process.env.NEXT_PUBLIC_API_URL || defaultApiUrl).hostname
+    return new URL(API_URL).hostname
   } catch {
-    return new URL(defaultApiUrl).hostname
+    return 'stork-helpers-api.onrender.com'
   }
 }
-
-const apiHostname = getApiHostname()
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
@@ -22,7 +19,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: apiHostname,
+        hostname: getApiHostname(),
       },
       {
         protocol: 'https',

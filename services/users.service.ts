@@ -1,4 +1,4 @@
-import { api } from '@/app/api/client'
+import { apiClient } from '@/lib/apiClient'
 import { AxiosError } from 'axios'
 import type { User } from '@/types/user'
 
@@ -16,7 +16,7 @@ interface ApiError {
 
 export const updateUser = async (data: Partial<User>): Promise<Partial<User>> => {
   try {
-    await api.patch<BackendResponse>('/users/me', data)
+    await apiClient.patch<BackendResponse>('/users/me', data)
     return data 
   } catch (error) {
     const axiosError = error as AxiosError<ApiError>
@@ -30,7 +30,7 @@ export const updateUserAvatar = async (file: File): Promise<User> => {
   formData.append('avatar', file)
 
   try {
-    const res = await api.patch<BackendAvatarResponse>('/users/avatar', formData, {
+    const res = await apiClient.patch<BackendAvatarResponse>('/users/avatar', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
     return { avatar: res.data.avatar } as User
@@ -42,7 +42,7 @@ export const updateUserAvatar = async (file: File): Promise<User> => {
 
 export const sendVerificationEmail = async (email: string): Promise<void> => {
   try {
-    await api.post('/users/verify', { email })
+    await apiClient.post('/users/verify', { email })
   } catch (error) {
     const axiosError = error as AxiosError<ApiError>
     throw new Error(axiosError.response?.data?.message || 'Помилка верифікації')

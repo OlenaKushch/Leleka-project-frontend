@@ -1,94 +1,79 @@
-# 🍼 Stork Helpers — Frontend
+# Leleka — Frontend
 
-## 🌐 Frontend
+Next.js frontend for the Stork Helpers pregnancy tracking app.
 
+## Tech stack
 
+- Next.js 16 (App Router)
+- TypeScript, React
+- Axios → NestJS API
+- Zustand, React Query
+- CSS Modules / SCSS
 
-Frontend частина застосунку Stork Helpers, побудована на Next.js (App Router).
-Призначена для майбутніх мам: трекінг тижнів, щоденник, завдання, персоналізовані поради.
+## Architecture
 
-🛠️ Tech Stack
+The frontend talks **directly** to the NestJS backend at `NEXT_PUBLIC_API_URL`.
 
-Next.js 16 (App Router)
+```
+Browser ──withCredentials──► NestJS API
+Next.js RSC (SSR) ──Cookie forward──► NestJS API
+```
 
-TypeScript
+There is **no Next.js BFF/proxy layer**. Auth cookies are set by NestJS on the API domain.
 
-React
+### NestJS requirements
 
-CSS Modules / SCSS
+- CORS: `credentials: true`, allowed origin = `NEXT_PUBLIC_APP_URL`
+- HttpOnly session cookies (`accessToken`, `refreshToken`, etc.)
+- Google OAuth: `GET /auth/google?redirect_uri={APP_URL}/auth/callback` → redirect back to frontend after login
 
-Axios
+## Environment variables
 
-Zustand
+Copy `.env.example` to `.env.local`:
 
-JWT Auth (via proxy API)
+```env
+NEXT_PUBLIC_API_URL=http://localhost:4000/api
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
 
-📁 Project Structure
-app/
- ├─ api/                 # Next route handlers (proxy, auth)
- ├─ diary/               # Diary pages
- ├─ journey/             # Pregnancy weeks
- ├─ profile/             # Profile & settings
- ├─ components/          # Reusable UI components
- ├─ layout.tsx           # App layout
- └─ page.tsx             # Home (Dashboard)
+## Getting started
 
-services/
- ├─ client/              # Axios (client-side)
- ├─ server/              # Fetch (server-side)
- └─ api.ts               # Axios instance
-
-store/                   # Zustand stores
-types/                   # TypeScript types
-hooks/                   # Custom hooks
-🔐 Authentication Flow
-
-Client → /api/proxy/*
-
-Next.js Route Handler
-
-Backend API
-
-Cookies (httpOnly)
-
-Refresh handled automatically
-
-🌐 Proxy API
-
-Всі API-запити проходять через:
-
-/api/proxy/*
-
-Це дозволяє:
-
-уникнути CORS
-
-безпечно працювати з cookies
-
-розділити client / server API
-
-⚙️ Environment Variables
-
-.env.local:
-
-API_URL=http://localhost:4000
-🚀 Getting Started
+```bash
 npm install
 npm run dev
+```
 
-Frontend буде доступний:
+Open [http://localhost:3000](http://localhost:3000).
 
-http://localhost:3000
-🧠 Architecture Rules
+## Project structure
 
-❌ axios у Server Components
+```
+app/                 # Pages (App Router)
+components/          # UI components
+hooks/               # Custom hooks
+lib/
+  apiClient.ts       # Browser axios client → NestJS
+  apiConfig.ts       # API_URL, APP_URL, OAuth helpers
+  serverApiClient.ts # SSR fetch with cookie forwarding
+services/
+  auth.service.ts    # Login, register, logout
+  *.service.ts       # Domain API calls
+  server/            # Server-only data fetching
+store/               # Zustand stores
+```
 
-✅ fetch у server services
+## Auth flow
 
-✅ axios у client services
+1. **Email/password** — `POST {API_URL}/auth/login` with `withCredentials`
+2. **Google** — redirect to `{API_URL}/auth/google`, callback at `/auth/callback`
+3. **Session** — `useMe()` hydrates user from `GET /users/me`
+4. **Protected routes** — client-side via `useProtectedRoute` + Zustand
 
-❌ shared services для server + client
+## Scripts
 
-✨ Author
-
-Stork Helpers Team 🕊️
+| Command        | Description          |
+|----------------|----------------------|
+| `npm run dev`  | Development server   |
+| `npm run build`| Production build     |
+| `npm run start`| Production server    |
+| `npm run lint` | ESLint               |

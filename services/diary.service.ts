@@ -1,4 +1,4 @@
-import { api } from '@/app/api/client'
+import { apiClient } from '@/lib/apiClient'
 import { DiaryEntry, Emotion } from '@/interfaces/diary'
 
 export interface DiaryEntryDTO {
@@ -10,26 +10,26 @@ export interface DiaryEntryDTO {
 export const DiaryService = {
 
   async getEntries(): Promise<DiaryEntry[]> {
-    const { data } = await api.get<DiaryEntry[]>('/diaries/me')
+    const { data } = await apiClient.get<DiaryEntry[]>('/diaries/me')
     return data
   },
 
   async getEmotions(): Promise<Emotion[]> {
-    const { data } = await api.get<Emotion[]>('/emotions/emotions')
+    const { data } = await apiClient.get<Emotion[]>('/emotions/emotions')
     return data
   },
 
   async createEntry(payload: DiaryEntryDTO): Promise<DiaryEntry> {
-    const { data } = await api.post<DiaryEntry>('/diaries/me', payload)
+    const { data } = await apiClient.post<DiaryEntry>('/diaries/me', payload)
     return data
   },
 
   async updateEntry(id: string, payload: DiaryEntryDTO): Promise<DiaryEntry> {
-    const { data } = await api.patch<DiaryEntry>(`/diaries/me/${id}`, payload)
+    const { data } = await apiClient.patch<DiaryEntry>(`/diaries/me/${id}`, payload)
     return data
   },
 
   async deleteEntry(id: string): Promise<void> {
-    await api.delete(`/diaries/me/${id}`)
+    await apiClient.delete(`/diaries/me/${id}`)
   },
 }

@@ -16,14 +16,8 @@ export const logout = async (): Promise<void> => {
   await apiClient.post('/auth/logout')
 }
 
-export const googleLogin = async (credential: string): Promise<User> => {
-  const { data } = await apiClient.post<User>('/auth/google', { credential })
-  return data
-}
-
 export const AuthService = {
   register,
   login,
   logout,
-  googleLogin,
 }

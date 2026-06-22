@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import TasksReminderCard from '../tasks/TasksReminderCard'
 import css from './JourneyDetails.module.css'
-import { api } from '@/app/api/client'
+import { apiClient } from '@/lib/apiClient'
 import { Loader } from '@/components/Loader/Loader'
 import { BabyInfo, MomInfo } from '@/types/babyData'
 
@@ -37,7 +37,7 @@ export default function JourneyDetails({ weekNumber }: JourneyDetailsProps) {
       }
 
       try {
-        const res = await api.get(`/weeks/me/journey/${tab}/${weekNumber}`)
+        const res = await apiClient.get(`/weeks/me/journey/${tab}/${weekNumber}`)
         console.log('DATA FROM BACK:', res.data)
         if (tab === 'baby') {
           setBabyData(res.data)
