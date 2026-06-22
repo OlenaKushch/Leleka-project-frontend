@@ -65,6 +65,15 @@
   color: var(--color-scheme-text);
 }
 
+.analogy {
+  margin: 0;
+  font-family: var(--font-family-base);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-scheme-text);
+}
+
 /* TABLET */
 @media (min-width: 768px) {
   .card {

@@ -1,13 +1,21 @@
 import { apiClient } from '@/lib/apiClient'
+import { mapBackendUser, mapUserUpdateToBackend, type BackendProfileUser } from '@/lib/userMapper'
 import { AxiosError } from 'axios'
 import type { User } from '@/types/user'
 
-interface BackendResponse {
-  message: string
+export async function fetchCurrentUser(): Promise<User> {
+  const { data } = await apiClient.get<BackendProfileUser>('/users/me')
+  const user = mapBackendUser(data)
+
+  if (!user.id || !user.email || !user.name) {
+    throw new Error('Invalid user profile response')
+  }
+
+  return user
 }
 
-interface BackendAvatarResponse {
-  avatar: string
+interface BackendResponse {
+  message: string
 }
 
 interface ApiError {
@@ -16,8 +24,8 @@ interface ApiError {
 
 export const updateUser = async (data: Partial<User>): Promise<Partial<User>> => {
   try {
-    await apiClient.patch<BackendResponse>('/users/me', data)
-    return data 
+    await apiClient.patch<BackendResponse>('/users/me', mapUserUpdateToBackend(data))
+    return data
   } catch (error) {
     const axiosError = error as AxiosError<ApiError>
     const message = axiosError.response?.data?.message || 'Помилка оновлення профілю'
@@ -30,10 +38,10 @@ export const updateUserAvatar = async (file: File): Promise<User> => {
   formData.append('avatar', file)
 
   try {
-    const res = await apiClient.patch<BackendAvatarResponse>('/users/avatar', formData, {
+    const res = await apiClient.patch<{ avatarUrl: string }>('/users/me/avatar', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
-    return { avatar: res.data.avatar } as User
+    return { avatar: res.data.avatarUrl } as User
   } catch (error) {
     const axiosError = error as AxiosError<ApiError>
     throw new Error(axiosError.response?.data?.message || 'Не вдалося завантажити фото')

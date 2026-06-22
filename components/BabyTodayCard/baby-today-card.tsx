@@ -24,18 +24,23 @@ export const BabyTodayCard = ({
       <div className={css.imageWrapper}>
         <Image src={image} alt={imageAlt} fill sizes="(max-width: 767px) 287px, 273px" />
       </div>
+      {imageAlt && (
+        <p className={css.analogy}>Ваш малюк зараз розміром з {imageAlt}</p>
+      )}
       <div className={css.stats}>
         <p>
-          <span className={css.label}>Розмір:</span> Приблизно {babySize} см.
+          <span className={css.label}>Розмір:</span> приблизно {babySize} см
         </p>
         <p>
-          <span className={css.label}>Вага:</span> Близько {babyWeight} грамів.
+          <span className={css.label}>Вага:</span> близько {babyWeight} грамів
         </p>
         <p>
           <span className={css.label}>Активність:</span> {babyActivity}
         </p>
       </div>
-      <p className={css.text}>{babyDevelopment}</p>
+      {babyDevelopment && babyDevelopment !== imageAlt && (
+        <p className={css.text}>{babyDevelopment}</p>
+      )}
     </section>
   )
 }

@@ -31,27 +31,38 @@ export function DashboardContent() {
     )
   }
 
-  const tipIndex = 6 - (weekData.daysToMeeting % 7)
+  const momDailyTips = weekData.momDailyTips ?? []
+  const tipIndex = momDailyTips.length > 1 ? 6 - (weekData.daysToMeeting % 7) : 0
 
   return (
     <div className={css.container}>
       <GreetingBlock />
       <div className={css.column}>
         <div className={css.left}>
-          <StatusBlock currentWeek={weekData.weekNumber} daysLeft={weekData.daysToMeeting} />
-          <BabyTodayCard
-            image={weekData.image}
-            imageAlt={weekData.imageAlt}
-            babySize={weekData.babySize}
-            babyWeight={weekData.babyWeight}
-            babyActivity={weekData.babyActivity}
-            babyDevelopment={weekData.babyDevelopment}
-          />
-          <MomTipCard tipIndex={tipIndex} momDailyTips={weekData.momDailyTips} />
+          <div className={css.dashboardCard}>
+            <StatusBlock currentWeek={weekData.weekNumber} daysLeft={weekData.daysToMeeting} />
+          </div>
+          <div className={`${css.dashboardCard} ${css.dashboardCardTall}`}>
+            <BabyTodayCard
+              image={weekData.image}
+              imageAlt={weekData.imageAlt}
+              babySize={weekData.babySize}
+              babyWeight={weekData.babyWeight}
+              babyActivity={weekData.babyActivity}
+              babyDevelopment={weekData.babyDevelopment}
+            />
+          </div>
+          <div className={css.dashboardCard}>
+            <MomTipCard tipIndex={tipIndex} momDailyTips={momDailyTips} />
+          </div>
         </div>
         <div className={css.right}>
-          <TasksList />
-          <FeelingCheckCard />
+          <div className={`${css.dashboardCard} ${css.dashboardCardTasks}`}>
+            <TasksList />
+          </div>
+          <div className={css.dashboardCard}>
+            <FeelingCheckCard />
+          </div>
         </div>
       </div>
     </div>

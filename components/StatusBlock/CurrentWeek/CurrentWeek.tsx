@@ -7,8 +7,8 @@ interface CurrentWeekProps {
 const CurrentWeek = ({ week }: CurrentWeekProps) => {
   return (
     <div className={css.statusItem}>
-      <p className={css.text}>Тиждень</p>
-      <p className={css.value}>{week}</p>
+      <p className={css.text}>Поточний термін</p>
+      <p className={css.value}>{week} тиждень</p>
     </div>
   )
 }

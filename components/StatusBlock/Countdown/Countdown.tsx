@@ -7,8 +7,8 @@ interface CountdownProps {
 const Countdown = ({ daysLeft }: CountdownProps) => {
   return (
     <div className={css.statusItem}>
-      <p className={css.text}>Днів до зустрічі</p>
-      <p className={css.value}>~{daysLeft}</p>
+      <p className={css.text}>Залишилось до зустрічі</p>
+      <p className={css.value}>{daysLeft} днів</p>
     </div>
   )
 }

@@ -9,7 +9,8 @@ import { useAuthStore } from '@/store/auth.store';
 import { UserBar } from '@/components/layout/UserBar/UserBar';
 import { AuthBar } from '@/components/layout/AuthBar/AuthBar';
 import AppLogo from '@/components/auth/AppLogo';
-import { NAV_ITEMS } from '@/components/layout/navigation';
+import { NAV_ITEMS } from '@/components/layout/navigation'
+import { isValidUser } from '@/lib/authValidation';
 
 export const Sidebar = () => {
     const pathname = usePathname();
@@ -28,7 +29,7 @@ export const Sidebar = () => {
                 {NAV_ITEMS.map((item) => (
                     <Link
                         key={item.href}
-                        href={user ? item.href : '/auth/login'}
+                        href={isValidUser(user) ? item.href : '/auth/login'}
                         className={`${styles.sidebar__link} ${pathname === item.href ? styles.active : ''}`}
                     >
                         <Image src={item.icon} alt={item.label} width={24} height={24} />
@@ -38,7 +39,7 @@ export const Sidebar = () => {
             </nav>
 
             <div className={styles.sidebar__footer}>
-                {user ? <UserBar /> : <AuthBar />}
+                {isValidUser(user) ? <UserBar /> : <AuthBar />}
             </div>
         </aside>
     );
