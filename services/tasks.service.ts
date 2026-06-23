@@ -1,30 +1,26 @@
-import { apiClient } from "@/lib/apiClient";
-import { Task } from "@/types/task";
+import { apiClient } from '@/lib/apiClient'
+import { mapBackendTask, mapBackendTasks, type BackendTask } from '@/lib/taskMapper'
+import { Task } from '@/types/task'
 
 export const getTasks = async (): Promise<Task[]> => {
-  const { data } = await apiClient.get<Task[]>('/tasks')
-  return Array.isArray(data) ? data : []
+  const { data } = await apiClient.get<BackendTask[]>('/tasks')
+  return mapBackendTasks(data)
 }
 
-export const createTask = async (
-    payload: { name: string; date: string }
-): Promise<Task> => {
-    const { data } = await apiClient.post<Task>('/tasks', payload);
-    return data;
-};
+export const createTask = async (payload: { name: string; date: string }): Promise<Task> => {
+  const { data } = await apiClient.post<BackendTask>('/tasks', payload)
+  return mapBackendTask(data)
+}
 
 export const updateTask = async (
-    taskId: string,
-    payload: { name: string; date: string }
+  taskId: string,
+  payload: { name: string; date: string }
 ): Promise<Task> => {
-    const { data } = await apiClient.put<Task>(`/tasks/${taskId}`, payload);
-    return data;
-};
+  const { data } = await apiClient.put<BackendTask>(`/tasks/${taskId}`, payload)
+  return mapBackendTask(data)
+}
 
-export const updateTasksStatus = async (
-    taskId: string,
-    isDone: boolean
-): Promise<Task> => {
-    const { data } = await apiClient.patch<Task>(`/tasks/${taskId}/status`, { isDone });
-    return data;
-};
+export const updateTasksStatus = async (taskId: string, isDone: boolean): Promise<Task> => {
+  const { data } = await apiClient.patch<BackendTask>(`/tasks/${taskId}/status`, { isDone })
+  return mapBackendTask(data)
+}

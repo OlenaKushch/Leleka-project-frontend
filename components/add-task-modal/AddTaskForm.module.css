@@ -44,6 +44,28 @@
   border-color: #ff4444;
 }
 
+.dateInputWrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+.dateInput {
+  position: relative;
+  cursor: pointer;
+  color-scheme: light;
+}
+
+.dateInput::-webkit-calendar-picker-indicator {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0;
+}
+
 .errorMessage {
   font-size: 14px;
   color: #ff4444;

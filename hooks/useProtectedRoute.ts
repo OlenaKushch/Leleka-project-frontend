@@ -6,7 +6,7 @@ import { useAuthStore } from '@/store/auth.store'
 import { isPublicAuthRoute } from '@/lib/routes'
 
 export const useProtectedRoute = () => {
-  const { isAuthenticated, hydrated } = useAuthStore()
+  const { isAuthenticated, hydrated, user } = useAuthStore()
   const router = useRouter()
   const pathname = usePathname()
 
@@ -20,9 +20,9 @@ export const useProtectedRoute = () => {
     }
 
     if (isAuthenticated && isPublic) {
-      router.replace('/')
+      router.replace(user?.hasCompletedOnboarding ? '/' : '/profile/edit')
     }
-  }, [hydrated, isAuthenticated, pathname, router])
+  }, [hydrated, isAuthenticated, pathname, router, user?.hasCompletedOnboarding])
 }
 
 export const useAuthErrorToast = (showError: (message: string) => void) => {

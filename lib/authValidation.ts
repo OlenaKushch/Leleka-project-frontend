@@ -1,3 +1,4 @@
+import { hasAccessToken } from '@/lib/accessToken'
 import type { User } from '@/types/user'
 
 export function isValidUser(user: Partial<User> | null | undefined): user is User {
@@ -10,6 +11,13 @@ export function isValidUser(user: Partial<User> | null | undefined): user is Use
       typeof user.name === 'string' &&
       user.name.length > 0
   )
+}
+
+export function isAuthSessionReady(
+  user: Partial<User> | null | undefined,
+  isAuthenticated: boolean
+): boolean {
+  return Boolean(isAuthenticated && hasAccessToken() && isValidUser(user))
 }
 
 export function formatUserEmail(email?: string, maxLength = 18): string {

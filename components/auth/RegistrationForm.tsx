@@ -2,7 +2,6 @@
 
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
-import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { useQueryClient } from '@tanstack/react-query'
@@ -41,14 +40,6 @@ export const RegistrationForm = () => {
   const router = useRouter()
   const queryClient = useQueryClient()
   const setUser = useAuthStore(state => state.setUser)
-  const isAuthenticated = useAuthStore(state => state.isAuthenticated)
-  const hydrated = useAuthStore(state => state.hydrated)
-
-  useEffect(() => {
-    if (hydrated && isAuthenticated) {
-      router.replace('/')
-    }
-  }, [hydrated, isAuthenticated, router])
 
   return (
     <Formik
@@ -64,7 +55,7 @@ export const RegistrationForm = () => {
           await applyAuthSession(queryClient, user)
           setUser(user)
           resetForm()
-          router.replace(user.hasCompletedOnboarding ? '/' : '/profile/edit')
+          router.replace('/profile/edit')
         } catch (error: unknown) {
           resetForm({ values: { ...values, password: '', confirmPassword: '' } })
           if (error instanceof Error) {

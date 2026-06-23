@@ -1,6 +1,7 @@
 'use client'
 
 import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik'
+import { useRef } from 'react'
 import * as Yup from 'yup'
 import toast from 'react-hot-toast'
 import styles from './AddTaskForm.module.css'
@@ -30,13 +31,34 @@ const taskValidationSchema = Yup.object({
 
 const getCurrentDate = (): string => {
   const today = new Date()
-  return today.toISOString().split('T')[0]
+  const year = today.getFullYear()
+  const month = String(today.getMonth() + 1).padStart(2, '0')
+  const day = String(today.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+const openDatePicker = (input: HTMLInputElement | null) => {
+  if (!input) return
+
+  if (typeof input.showPicker === 'function') {
+    try {
+      input.showPicker()
+      return
+    } catch {
+      // Some browsers block showPicker without a direct user gesture.
+    }
+  }
+
+  input.focus()
 }
 
 const AddTaskForm = ({ onTaskSaved, taskToEdit }: AddTaskFormProps) => {
+  const dateInputRef = useRef<HTMLInputElement>(null)
+  const minDate = getCurrentDate()
+
   const initialValues: TaskFormValues = {
     name: taskToEdit?.name || '',
-    date: taskToEdit?.date || getCurrentDate(),
+    date: taskToEdit?.date?.slice(0, 10) || minDate,
   }
 
   const handleSubmit = async (
@@ -54,8 +76,9 @@ const AddTaskForm = ({ onTaskSaved, taskToEdit }: AddTaskFormProps) => {
 
       onTaskSaved()
     } catch (error: unknown) {
-      console.error('Task save error:', error)
-      toast.error('Помилка при збереженні завдання. Перевірте авторизацію.')
+      const message =
+        error instanceof Error ? error.message : 'Помилка при збереженні завдання'
+      toast.error(message)
     } finally {
       setSubmitting(false)
     }
@@ -88,12 +111,28 @@ const AddTaskForm = ({ onTaskSaved, taskToEdit }: AddTaskFormProps) => {
             <label htmlFor="date" className={styles.label}>
               Дата <span className={styles.required}>*</span>
             </label>
-            <Field
-              id="date"
-              name="date"
-              type="date"
-              className={`${styles.input} ${errors.date && touched.date ? styles.error : ''}`}
-            />
+            <div
+              className={styles.dateInputWrapper}
+              onClick={() => openDatePicker(dateInputRef.current)}
+            >
+              <Field
+                innerRef={dateInputRef}
+                id="date"
+                name="date"
+                type="date"
+                min={minDate}
+                className={`${styles.input} ${styles.dateInput} ${
+                  errors.date && touched.date ? styles.error : ''
+                }`}
+                onClick={(event: React.MouseEvent<HTMLInputElement>) => {
+                  event.stopPropagation()
+                  openDatePicker(event.currentTarget)
+                }}
+                onFocus={(event: React.FocusEvent<HTMLInputElement>) => {
+                  openDatePicker(event.currentTarget)
+                }}
+              />
+            </div>
             <ErrorMessage name="date" component="div" className={styles.errorMessage} />
           </div>
 
