@@ -5,7 +5,7 @@ export function getAccessToken(): string | null {
     return null
   }
 
-  return sessionStorage.getItem(STORAGE_KEY)
+  return localStorage.getItem(STORAGE_KEY)
 }
 
 export function setAccessToken(token: string): void {
@@ -13,7 +13,7 @@ export function setAccessToken(token: string): void {
     return
   }
 
-  sessionStorage.setItem(STORAGE_KEY, token)
+  localStorage.setItem(STORAGE_KEY, token)
 }
 
 export function clearAccessToken(): void {
@@ -21,5 +21,9 @@ export function clearAccessToken(): void {
     return
   }
 
-  sessionStorage.removeItem(STORAGE_KEY)
+  localStorage.removeItem(STORAGE_KEY)
+}
+
+export function hasAccessToken(): boolean {
+  return Boolean(getAccessToken())
 }

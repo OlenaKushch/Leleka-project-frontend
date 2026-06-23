@@ -16,7 +16,7 @@ export const AuthPage = ({ authType }: Props) => {
         <AuthErrorHandler />
       </Suspense>
       {authType === 'login' && <LoginForm />}
-      {authType === 'register' && <RegistrationForm />}
+      {authType === 'register' && <RegistrationForm key="register-form" />}
     </div>
   )
 }

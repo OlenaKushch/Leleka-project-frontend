@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { User } from '../types/user'
 import { isValidUser } from '@/lib/authValidation'
-import { clearAccessToken } from '@/lib/accessToken'
+import { clearAccessToken, hasAccessToken } from '@/lib/accessToken'
 
 export interface AuthState {
   user: User | null
@@ -56,6 +56,8 @@ export const useAuthStore = create<AuthState>()(
       }),
       onRehydrateStorage: () => state => {
         if (state?.user && !isValidUser(state.user)) {
+          state.clearAuth()
+        } else if (state?.isAuthenticated && !hasAccessToken()) {
           state.clearAuth()
         }
         state?.setHydrated(true)
