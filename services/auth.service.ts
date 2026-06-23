@@ -1,21 +1,34 @@
 import { apiClient } from '@/lib/apiClient'
-import { mapBackendUser } from '@/lib/userMapper'
+import { clearAccessToken, setAccessToken } from '@/lib/accessToken'
 import type { User } from '@/types/user'
 import type { UserRegister, UserLogin } from '@/types/auth'
 import { fetchCurrentUser } from '@/services/users.service'
 
-export const register = async (creds: UserRegister): Promise<User> => {
-  await apiClient.post('/auth/register', creds)
+type AuthResponse = {
+  accessToken: string
+}
+
+async function establishSession(response: { data: AuthResponse }): Promise<User> {
+  setAccessToken(response.data.accessToken)
   return fetchCurrentUser()
+}
+
+export const register = async (creds: UserRegister): Promise<User> => {
+  const response = await apiClient.post<AuthResponse>('/auth/register', creds)
+  return establishSession(response)
 }
 
 export const login = async (creds: UserLogin): Promise<User> => {
-  await apiClient.post('/auth/login', creds)
-  return fetchCurrentUser()
+  const response = await apiClient.post<AuthResponse>('/auth/login', creds)
+  return establishSession(response)
 }
 
 export const logout = async (): Promise<void> => {
-  await apiClient.post('/auth/logout')
+  try {
+    await apiClient.post('/auth/logout')
+  } finally {
+    clearAccessToken()
+  }
 }
 
 export const AuthService = {

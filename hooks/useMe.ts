@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import type { User } from '@/types/user'
+import { hasAccessToken } from '@/lib/accessToken'
 import { isValidUser } from '@/lib/authValidation'
 import { useAuthStore } from '@/store/auth.store'
 import { fetchCurrentUser } from '@/services/users.service'
@@ -28,7 +29,7 @@ export function useMe() {
     },
     retry: false,
     staleTime: Infinity,
-    enabled: hydrated && isAuthenticated,
+    enabled: hydrated && isAuthenticated && hasAccessToken(),
   })
 
   useEffect(() => {

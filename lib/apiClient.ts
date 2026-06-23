@@ -1,10 +1,25 @@
 import axios, { AxiosError, AxiosInstance } from 'axios'
 import { API_URL, API_TIMEOUT_MS } from '@/lib/apiConfig'
+import { getAccessToken } from '@/lib/accessToken'
 import { apiError } from '@/utils/error'
 
 interface ApiErrorResponse {
   message?: string
   error?: string
+}
+
+function applyRequestInterceptor(instance: AxiosInstance): AxiosInstance {
+  instance.interceptors.request.use(config => {
+    const token = getAccessToken()
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+
+    return config
+  })
+
+  return instance
 }
 
 function applyErrorInterceptor(instance: AxiosInstance): AxiosInstance {
@@ -32,6 +47,7 @@ function applyErrorInterceptor(instance: AxiosInstance): AxiosInstance {
 }
 
 export const apiClient = applyErrorInterceptor(
+  applyRequestInterceptor(
   axios.create({
     baseURL: API_URL,
     timeout: API_TIMEOUT_MS,
@@ -39,7 +55,8 @@ export const apiClient = applyErrorInterceptor(
     headers: {
       'Content-Type': 'application/json',
     },
-  })
+  }),
+  ),
 )
 
 export const api = apiClient

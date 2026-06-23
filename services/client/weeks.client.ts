@@ -1,4 +1,6 @@
+import axios from 'axios'
 import { apiClient } from '@/lib/apiClient'
+import { hasAccessToken } from '@/lib/accessToken'
 import {
   mapDashboardToWeekData,
   type NestDashboardResponse,
@@ -21,10 +23,18 @@ export async function fetchPublicWeek(): Promise<WeekData> {
 }
 
 export async function fetchWeekData(): Promise<WeekData> {
+  if (!hasAccessToken()) {
+    return fetchPublicWeek()
+  }
+
   try {
     return await fetchMyDayWeek()
-  } catch {
-    return fetchPublicWeek()
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      return fetchPublicWeek()
+    }
+
+    throw error
   }
 }
 
