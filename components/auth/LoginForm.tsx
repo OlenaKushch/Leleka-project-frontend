@@ -41,7 +41,7 @@ export const LoginForm = () => {
           const user = await login(values)
           await applyAuthSession(queryClient, user)
           setUser(user)
-          router.push('/')
+          router.replace(user.hasCompletedOnboarding ? '/' : '/profile/edit')
         } catch (error: unknown) {
           if (error instanceof Error) {
             toast.error(error.message)

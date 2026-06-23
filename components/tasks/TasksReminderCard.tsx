@@ -4,16 +4,20 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuthStore } from '@/store/auth.store'
+import { isAuthSessionReady } from '@/lib/authValidation'
+import { hasAccessToken } from '@/lib/accessToken'
 import type { Task } from '@/types/task'
 import AddTaskModal from '../add-task-modal/AddTaskModal'
 import styles from './TasksReminderCard.module.css'
 import { getTasks, updateTasksStatus } from '@/services/tasks.service'
+import toast from 'react-hot-toast'
 
 const TasksList = () => {
   const router = useRouter()
   const queryClient = useQueryClient()
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const { isAuthenticated, hydrated } = useAuthStore()
+  const { user, isAuthenticated, hydrated } = useAuthStore()
+  const canManageTasks = isAuthSessionReady(user, isAuthenticated)
 
   useEffect(() => {
     document.body.style.overflow = isModalOpen ? 'hidden' : ''
@@ -25,7 +29,7 @@ const TasksList = () => {
   const { data: tasks = [], isLoading } = useQuery<Task[]>({
     queryKey: ['tasks'],
     queryFn: getTasks,
-    enabled: hydrated && isAuthenticated,
+    enabled: hydrated && canManageTasks,
   })
 
   const { mutate: toggleTask } = useMutation({
@@ -47,10 +51,17 @@ const TasksList = () => {
   }
 
   const handleOpenModal = () => {
-    if (!isAuthenticated) {
+    if (!canManageTasks) {
+      if (isAuthenticated && !hasAccessToken()) {
+        toast.error('Сесію авторизації втрачено. Увійдіть знову.')
+        router.push('/auth/login')
+        return
+      }
+
       router.push('/auth/register')
       return
     }
+
     setIsModalOpen(true)
   }
 
@@ -65,7 +76,7 @@ const TasksList = () => {
         </button>
       </div>
 
-      {!isAuthenticated && (
+      {!canManageTasks && (
         <>
           <p className={styles.emptyBold}>Наразі немає жодних завдань</p>
           <p className={styles.emptyText}>Увійдіть, щоб створювати завдання!</p>
@@ -75,7 +86,7 @@ const TasksList = () => {
         </>
       )}
 
-      {isAuthenticated && tasks.length === 0 && !isLoading && (
+      {canManageTasks && tasks.length === 0 && !isLoading && (
         <>
           <p className={styles.emptyBold}>Наразі немає жодних завдань</p>
           <p className={styles.emptyText}>Створіть мерщій нове завдання!</p>
@@ -85,7 +96,7 @@ const TasksList = () => {
         </>
       )}
 
-    {isAuthenticated && tasks.length > 0 && (
+    {canManageTasks && tasks.length > 0 && (
   <ul className={styles.list}>
     {tasks.map(task => (
       <li key={task._id} className={styles.item}>
