@@ -14,12 +14,12 @@
 .content {
     position: relative;
     background-color: #fff;
-    border-radius: 40px;
-    padding: 64px 20px;
+    border-radius: 32px;
+    padding: 40px 20px;
     width: 335px;
     display: flex;
     flex-direction: column;
-    gap: 48px;
+    gap: 32px;
 }
 
 .closeBtn {
@@ -49,7 +49,7 @@
 
 .title {
     font-weight: 700;
-    font-size: 36px;
+    font-size: 28px;
     font-family: 'Comfortaa', cursive;
     text-align: center;
     padding: 0;
@@ -118,8 +118,8 @@
 
 @media screen and (min-width: 768px) {
     .content {
-        padding: 64px 32px;
-        width: 704px;
+        padding: 40px 28px;
+        width: 460px;
     }
 
     .closeBtn {
@@ -140,12 +140,12 @@
 
 @media screen and (min-width: 1440px) {
     .content {
-        width: 768px;
-        padding: 64px;
+        width: 520px;
+        padding: 40px;
     }
 
     .title {
-        font-size: 48px;
+        font-size: 32px;
     }
 
     .btn {

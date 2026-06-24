@@ -2,7 +2,7 @@
 
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 
@@ -15,6 +15,7 @@ import OnboardingAvatar from '@/components/OnboardingAvatar/OnboardingAvatar'
 import OnboardingCustomDate from '@/components/OnboardingCustomDate/OnboardingCustomDate'
 import OnboardingCustomSelect from '@/components/OnboardingCustomSelect/OnboardingCustomSelect'
 import styles from './OnboardingForm.module.css'
+import { invalidatePregnancyQueries } from '@/lib/authSession'
 
 export interface OnboardingValues {
   name: string
@@ -37,15 +38,20 @@ export default function OnboardingForm() {
   const router = useRouter()
   const { user, setUser } = useAuthStore()
   const setTheme = useThemeStore(state => state.setTheme)
+  const queryClient = useQueryClient()
 
   const mutation = useMutation({
     mutationFn: async (values: OnboardingValues) => {
       let newAvatarUrl = user?.avatar
 
       if (values.avatar) {
-        const avatarRes = await updateUserAvatar(values.avatar)
-        if (avatarRes.avatar) {
-          newAvatarUrl = avatarRes.avatar
+        try {
+          const avatarRes = await updateUserAvatar(values.avatar)
+          if (avatarRes.avatar) {
+            newAvatarUrl = avatarRes.avatar
+          }
+        } catch {
+          toast.error('Не вдалося завантажити фото, спробуйте пізніше')
         }
       }
 
@@ -65,12 +71,14 @@ export default function OnboardingForm() {
 
       return updatedData
     },
-    onSuccess: updatedData => {
+    onSuccess: async updatedData => {
       if (user) {
         setUser({ ...user, ...updatedData })
       } else {
         setUser(updatedData as User)
       }
+
+      await invalidatePregnancyQueries(queryClient)
 
       setTheme(updatedData.theme ?? 'neutral')
       toast.success('Онбординг завершено')

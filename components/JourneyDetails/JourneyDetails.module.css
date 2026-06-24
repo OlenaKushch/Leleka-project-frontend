@@ -276,38 +276,34 @@
     grid-row: 1 / span 2; /* займає висоту двох лівих блоків */
   }
   .momtab > :first-child {
-    height: 194px;
-    overflow-y: auto;
+    min-height: 194px;
   }
   .momtab > :nth-child(2) {
-    height: 322px;
-    overflow-y: auto;
+    min-height: 322px;
   }
   .momtab > :nth-child(3) {
-    height: 499px;
-    overflow-y: auto;
+    min-height: 499px;
   }
 
   .babytab {
     width: 100%;
     border-radius: 32px;
-
-    height: 467px;
+    min-height: 467px;
     display: grid;
     grid-template-columns: 461px 1fr;
-    grid-template-rows: 280px 1fr;
+    grid-template-rows: auto 1fr;
+    align-items: start;
   }
 
   .babytab > :first-child {
     grid-column: 1;
-    grid-row: 1/-1;
+    grid-row: 1 / -1;
   }
 
   .babytab > :nth-child(2) {
-    height: 280 px;
     grid-column: 2;
     grid-row: 1;
-    overflow: auto;
+    overflow: visible;
 
     font-family: var(--font-family);
     font-weight: 400;
@@ -317,10 +313,9 @@
   }
 
   .babytab > :nth-child(3) {
-    height: 104 px;
     grid-column: 2;
     grid-row: 2;
-    overflow: auto;
+    overflow: visible;
     font-family: var(--font-family);
     font-weight: 400;
     font-size: 16px;

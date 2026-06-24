@@ -37,13 +37,20 @@
   background: var(--theme-lighter, #fef1db);
 }
 
-.errorState button {
+.errorState button,
+.errorState .errorLink {
   padding: 10px 20px;
   border: none;
   border-radius: 999px;
   background: var(--theme-primary, #f5a623);
   cursor: pointer;
   font-family: var(--font-family);
+}
+
+.errorState .errorLink {
+  display: inline-block;
+  text-decoration: none;
+  color: inherit;
 }
 
 /*======Tablet styles======*/

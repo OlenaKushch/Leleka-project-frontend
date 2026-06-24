@@ -35,13 +35,15 @@ export const LoginForm = () => {
       validationSchema={validationSchema}
       validateOnMount={true}
       validateOnChange={true}
-      onSubmit={async values => {
+      onSubmit={async (values, { resetForm }) => {
         try {
           const user = await login(values)
           await applyAuthSession(queryClient, user)
           setUser(user)
+          resetForm()
           router.replace(user.hasCompletedOnboarding ? '/' : '/profile/edit')
         } catch (error: unknown) {
+          resetForm()
           if (error instanceof Error) {
             toast.error(error.message)
           } else {

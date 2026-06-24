@@ -1,5 +1,7 @@
 'use client'
 
+import Link from 'next/link'
+import { useAuthStore } from '@/store/auth.store'
 import { GreetingBlock } from '@/components/GreetingBlock/GreetingBlock'
 import { MomTipCard } from '@/components/MomTipCard/mom-tip-card'
 import { BabyTodayCard } from '@/components/BabyTodayCard/baby-today-card'
@@ -12,6 +14,23 @@ import css from '@/app/page.module.css'
 
 export function DashboardContent() {
   const { data: weekData, isLoading, isError, refetch } = useWeekData()
+  const user = useAuthStore(state => state.user)
+
+  const needsOnboarding = !user?.hasCompletedOnboarding || !user?.dueDate
+
+  if (needsOnboarding) {
+    return (
+      <div className={css.container}>
+        <GreetingBlock />
+        <div className={css.errorState}>
+          <p>Дозвольте нам познайомитися з вами</p>
+          <Link className={css.errorLink} href="/profile/edit">
+            Заповнити інформацію
+          </Link>
+        </div>
+      </div>
+    )
+  }
 
   if (isLoading) {
     return <DashboardSkeleton />
