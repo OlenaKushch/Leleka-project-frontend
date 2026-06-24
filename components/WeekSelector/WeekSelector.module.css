@@ -2,10 +2,17 @@
   display: flex;
   gap: 16px;
   overflow-x: auto;
+  overflow-y: hidden;
   scrollbar-width: none;
+  -ms-overflow-style: none;
   scroll-behavior: smooth;
   margin-top: 24px;
   margin-bottom: 32px;
+  padding-bottom: 4px;
+}
+
+.list::-webkit-scrollbar {
+  display: none;
 }
 
 .container {
@@ -26,6 +33,7 @@
 }
 
 .week {
+  position: relative;
   flex: 0 0 auto;
   width: 97px;
   height: 87px;
@@ -51,6 +59,12 @@
   background-color: var(--theme-lighter);
   opacity: 1;
   border-color: transparent;
+}
+
+.future {
+  background-color: var(--color-scheme-foreground);
+  opacity: 0.85;
+  border: 1px solid var(--opacity-neutral-darkest-5);
 }
 
 .week.hovered {

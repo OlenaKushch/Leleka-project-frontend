@@ -5,9 +5,6 @@ import css from './WeekSelector.module.css'
 
 interface WeekSelectorProps {
   currentWeek: number
-}
-interface WeekSelectorProps {
-  currentWeek: number
   selectedWeek: number
   onWeekSelect: (week: number) => void
 }
@@ -59,7 +56,9 @@ const WeekSelector = ({
               ? css.active
               : week === currentWeek
               ? css.current
-              : css.past
+              : week < currentWeek
+              ? css.past
+              : css.future
           }`}
           onClick={() => handleWeekClick(week)}
         >
