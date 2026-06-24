@@ -3,15 +3,14 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 import { useQueryClient } from '@tanstack/react-query'
 import { login } from '@/services/auth.service'
 import { applyAuthSession } from '@/lib/authSession'
 import { useAuthStore } from '@/store/auth.store'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
-import css from '@/components/auth/LoginForm.module.css'
-import AppLogo from '@/components/auth/AppLogo'
+import { AuthScreenLayout } from '@/components/auth/AuthScreenLayout'
+import styles from '@/components/auth/AuthScreenLayout.module.css'
 import { GoogleButton } from './GoogleButton'
 
 const validationSchema = Yup.object({
@@ -52,68 +51,52 @@ export const LoginForm = () => {
       }}
     >
       {({ isSubmitting, isValid }) => (
-        <div className={css.auth_wrapper}>
-          <div className={css.auth_form}>
+        <AuthScreenLayout>
+          <div className={styles.auth_container}>
             <Form>
-              <div className={css.auth_logo}> 
-                  <AppLogo className={css.auth_logo_img} /> 
+              <h1 className={styles.auth_title}>Вхід</h1>
+              <div className={styles.auth_wrap_input}>
+                <Field
+                  className={styles.auth_input}
+                  name="email"
+                  maxLength={64}
+                  type="email"
+                  placeholder="Пошта"
+                />
+                <ErrorMessage name="email">
+                  {msg => <div className={styles.ui_error}>{msg}</div>}
+                </ErrorMessage>
+                <Field
+                  className={styles.auth_input}
+                  name="password"
+                  maxLength={128}
+                  type="password"
+                  placeholder="Пароль"
+                />
+                <ErrorMessage name="password">
+                  {msg => <div className={styles.ui_error}>{msg}</div>}
+                </ErrorMessage>
+                <button
+                  className={styles.auth_button}
+                  type="submit"
+                  disabled={isSubmitting || !isValid}
+                >
+                  Увійти
+                </button>
+                <div className={styles.google_button_wrap}>
+                  <GoogleButton mode="login" />
+                </div>
               </div>
 
-              <div className={css.auth_container}>
-                <h1 className={css.auth_title}>Вхід</h1>
-                <div className={css.auth_wrap_input}>
-                  <Field
-                    className={css.auth_input}
-                    name="email"
-                    maxLength={64}
-                    type="email"
-                    placeholder="Пошта"
-                  ></Field>
-                  <ErrorMessage name="email">
-                    {msg => <div className={css.ui_error}>{msg}</div>}
-                  </ErrorMessage>
-                  <Field
-                    className={css.auth_input}
-                    name="password"
-                    maxLength={128}
-                    type="password"
-                    placeholder="Пароль"
-                  ></Field>
-                  <ErrorMessage name="password">
-                    {msg => <div className={css.ui_error}>{msg}</div>}
-                  </ErrorMessage>
-                  <button
-                    className={css.auth_button}
-                    type="submit"
-                    disabled={isSubmitting || !isValid}
-                  >
-                    Увійти
-                  </button>
-                  <div className={css.google_button_wrap}>
-                    <GoogleButton mode='login' />
-                  </div>
-                </div>
-
-                <div className={css.auth_text}>
-                  Нeмає акаунту?
-                  <Link className={css.auth_text_link} href="/auth/register">
-                    Зареєструватися
-                  </Link>
-                </div>
+              <div className={styles.auth_text}>
+                Немає акаунту?
+                <Link className={styles.auth_text_link} href="/auth/register">
+                  Зареєструватися
+                </Link>
               </div>
             </Form>
           </div>
-          <div className={css.auth_image}>
-            <Image
-              src="/images/eggsInTheNest/eggs_in_the_nest.jpg"
-              alt="Яйця лелек у гнізді"
-              fill
-              priority
-              sizes="50vw"
-              style={{ objectFit: 'contain', objectPosition: 'center' }}
-            />
-          </div>
-        </div>
+        </AuthScreenLayout>
       )}
     </Formik>
   )

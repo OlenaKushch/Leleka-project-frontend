@@ -9,13 +9,7 @@ type AuthResponse = {
 }
 
 async function establishSession(response: { data: AuthResponse }): Promise<User> {
-  const token = response.data?.accessToken
-
-  if (!token) {
-    throw new Error('Не вдалося отримати токен авторизації')
-  }
-
-  setAccessToken(token)
+  setAccessToken(response.data.accessToken)
   return fetchCurrentUser()
 }
 

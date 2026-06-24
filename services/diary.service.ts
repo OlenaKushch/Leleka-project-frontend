@@ -15,7 +15,7 @@ export const DiaryService = {
   },
 
   async getEmotions(): Promise<Emotion[]> {
-    const { data } = await apiClient.get<Emotion[]>('/emotions/emotions')
+    const { data } = await apiClient.get<Emotion[]>('/emotions')
     return data
   },
 

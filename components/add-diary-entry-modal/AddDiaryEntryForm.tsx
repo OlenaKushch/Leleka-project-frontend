@@ -7,6 +7,7 @@ import toast from 'react-hot-toast'
 import axios from 'axios'
 import { apiClient } from '@/lib/apiClient'
 import { Emotion, DiaryEntry } from '@/interfaces/diary'
+import { DiaryService } from '@/services/diary.service'
 import styles from './AddDiaryEntryForm.module.css'
 
 interface FormValues {
@@ -44,12 +45,13 @@ export default function AddDiaryEntryForm({
   useEffect(() => {
     const fetchEmotions = async () => {
       try {
-        const { data } = await apiClient.get<Emotion[]>('/emotions/emotions')
-        setAvailableEmotions(data)
+        const emotions = await DiaryService.getEmotions()
+        setAvailableEmotions(emotions)
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           console.error('Помилка:', error.response?.status)
         }
+        toast.error('Не вдалося завантажити список емоцій')
       }
     }
     fetchEmotions()
