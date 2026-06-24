@@ -14,9 +14,10 @@ const WEEK_STALE_TIME = 5 * 60 * 1000
 export function useWeekData() {
   const hydrated = useAuthStore(state => state.hydrated)
   const isAuthenticated = useAuthStore(state => state.isAuthenticated)
+  const dueDate = useAuthStore(state => state.user?.dueDate ?? '')
 
   return useQuery({
-    queryKey: ['weekData', isAuthenticated && hasAccessToken() ? 'private' : 'public'],
+    queryKey: ['weekData', isAuthenticated && hasAccessToken() ? 'private' : 'public', dueDate],
     queryFn: fetchWeekData,
     enabled: hydrated,
     staleTime: WEEK_STALE_TIME,
@@ -26,9 +27,10 @@ export function useWeekData() {
 
 export function useMyDayWeek(enabled = true) {
   const hydrated = useAuthStore(state => state.hydrated)
+  const dueDate = useAuthStore(state => state.user?.dueDate ?? '')
 
   return useQuery({
-    queryKey: ['myDayWeek'],
+    queryKey: ['myDayWeek', dueDate],
     queryFn: fetchCurrentJourneyWeek,
     enabled: enabled && hydrated && hasAccessToken(),
     staleTime: WEEK_STALE_TIME,
@@ -38,9 +40,10 @@ export function useMyDayWeek(enabled = true) {
 
 export function useAuthenticatedWeekData(enabled = true) {
   const hydrated = useAuthStore(state => state.hydrated)
+  const dueDate = useAuthStore(state => state.user?.dueDate ?? '')
 
   return useQuery({
-    queryKey: ['authenticatedWeekData'],
+    queryKey: ['authenticatedWeekData', dueDate],
     queryFn: fetchMyDayWeek,
     enabled: enabled && hydrated && hasAccessToken(),
     staleTime: WEEK_STALE_TIME,

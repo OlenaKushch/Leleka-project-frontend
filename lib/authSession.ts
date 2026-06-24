@@ -5,5 +5,11 @@ export async function applyAuthSession(queryClient: QueryClient, user: User | nu
   await queryClient.cancelQueries({ queryKey: ['me'] })
   queryClient.setQueryData(['me'], user)
   await queryClient.invalidateQueries({ queryKey: ['tasks'] })
+  await invalidatePregnancyQueries(queryClient)
+}
+
+export async function invalidatePregnancyQueries(queryClient: QueryClient): Promise<void> {
   await queryClient.invalidateQueries({ queryKey: ['weekData'] })
+  await queryClient.invalidateQueries({ queryKey: ['myDayWeek'] })
+  await queryClient.invalidateQueries({ queryKey: ['authenticatedWeekData'] })
 }

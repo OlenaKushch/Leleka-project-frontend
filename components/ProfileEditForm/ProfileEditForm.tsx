@@ -7,9 +7,10 @@ import * as Yup from 'yup'
 import toast from 'react-hot-toast'
 import { useAuthStore } from '@/store/auth.store'
 import { useThemeStore } from '@/store/theme.store'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { updateProfile, sendVerificationEmail } from '@/services/users.service'
 import type { User } from '@/types/user'
+import { invalidatePregnancyQueries } from '@/lib/authSession'
 
 /* -------------------- validation -------------------- */
 
@@ -62,6 +63,7 @@ const DateField = ({ field, form }: FieldProps) => {
 export const ProfileEditForm = () => {
   const { user, setUser } = useAuthStore()
   const { theme: localTheme, setTheme } = useThemeStore()
+  const queryClient = useQueryClient()
 
   const initialEmail = user?.email
   const today = new Date().toISOString().split('T')[0]
@@ -106,7 +108,9 @@ export const ProfileEditForm = () => {
     }
 
     mutate(payload, {
-      onSuccess: () => {
+      onSuccess: async () => {
+        await invalidatePregnancyQueries(queryClient)
+
         if (payload.email) {
           sendVerificationEmail(payload.email).catch((err: Error) => toast.error(err.message))
           toast.success('Лист для верифікації надіслано на нову пошту')

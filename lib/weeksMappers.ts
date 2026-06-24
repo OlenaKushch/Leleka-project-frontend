@@ -5,6 +5,7 @@ export interface NestDashboardResponse {
   daysToBirth: number
   baby: {
     analogy: string
+    babyDevelopment?: string
     babySize: number
     babyWeight: number
     image: string
@@ -26,7 +27,7 @@ export function mapDashboardToWeekData(data: NestDashboardResponse): WeekData {
     babySize: data.baby.babySize,
     babyWeight: data.baby.babyWeight,
     babyActivity: data.baby.activity,
-    babyDevelopment: data.baby.analogy,
+    babyDevelopment: data.baby.babyDevelopment ?? data.baby.analogy ?? '',
     momDailyTips: data.momTip ? [data.momTip] : [],
   }
 }
