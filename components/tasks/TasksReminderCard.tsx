@@ -8,23 +8,25 @@ import { isAuthSessionReady } from '@/lib/authValidation'
 import { hasAccessToken } from '@/lib/accessToken'
 import type { Task } from '@/types/task'
 import AddTaskModal from '../add-task-modal/AddTaskModal'
+import { ConfirmationModal } from '@/components/confirmation-modal/confirmation-modal.component'
 import styles from './TasksReminderCard.module.css'
-import { getTasks, updateTasksStatus } from '@/services/tasks.service'
+import { getTasks, updateTasksStatus, deleteTask } from '@/services/tasks.service'
 import toast from 'react-hot-toast'
 
 const TasksList = () => {
   const router = useRouter()
   const queryClient = useQueryClient()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [taskToDelete, setTaskToDelete] = useState<Task | null>(null)
   const { user, isAuthenticated, hydrated } = useAuthStore()
   const canManageTasks = isAuthSessionReady(user, isAuthenticated)
 
   useEffect(() => {
-    document.body.style.overflow = isModalOpen ? 'hidden' : ''
+    document.body.style.overflow = isModalOpen || taskToDelete ? 'hidden' : ''
     return () => {
       document.body.style.overflow = ''
     }
-  }, [isModalOpen])
+  }, [isModalOpen, taskToDelete])
 
   const { data: tasks = [], isLoading } = useQuery<Task[]>({
     queryKey: ['tasks'],
@@ -36,6 +38,18 @@ const TasksList = () => {
     mutationFn: ({ id, isDone }: { id: string; isDone: boolean }) => updateTasksStatus(id, isDone),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] })
+    },
+  })
+
+  const { mutate: removeTask, isPending: isDeleting } = useMutation({
+    mutationFn: (id: string) => deleteTask(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] })
+      toast.success('Завдання видалено')
+      setTaskToDelete(null)
+    },
+    onError: () => {
+      toast.error('Не вдалося видалити завдання')
     },
   })
 
@@ -121,6 +135,22 @@ const TasksList = () => {
     <span className={`${styles.taskText} ${task.isDone ? styles.done : ""}`}>
       {task.name}
     </span>
+    <button
+      type="button"
+      className={styles.deleteBtn}
+      onClick={() => setTaskToDelete(task)}
+      aria-label={`Видалити завдання: ${task.name}`}
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m2 0v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7h12ZM10 11v6M14 11v6"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </button>
   </div>
 </li>
     ))}
@@ -132,6 +162,20 @@ const TasksList = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onTaskSaved={() => queryClient.invalidateQueries({ queryKey: ['tasks'] })}
+      />
+
+      <ConfirmationModal
+        isOpen={Boolean(taskToDelete)}
+        title="Ви впевнені, що хочете видалити завдання?"
+        description={taskToDelete?.name}
+        confirmText="Так"
+        cancelText="Не видаляти"
+        variant="danger"
+        isLoading={isDeleting}
+        onConfirm={() => taskToDelete && removeTask(taskToDelete._id)}
+        onCancel={() => {
+          if (!isDeleting) setTaskToDelete(null)
+        }}
       />
     </section>
   )

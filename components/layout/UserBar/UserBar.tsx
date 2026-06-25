@@ -36,11 +36,11 @@ export const UserBar = () => {
     try {
       await AuthService.logout()
     } finally {
+      router.replace('/')
       clearAuth()
       queryClient.clear()
       setIsModalOpen(false)
       setIsLoading(false)
-      router.replace('/')
     }
   }
 

@@ -43,8 +43,7 @@
    THEMES
 ===================================================== */
 
-/* Default + girl */
-:root,
+/* girl */
 :root[data-theme='girl'] {
   --theme-lightest: #fff9fa;
   --theme-lighter: #fff4f6;
@@ -66,7 +65,8 @@
   --theme-darkest: #39484c;
 }
 
-/* neutral */
+/* Default (guest / after logout) + neutral */
+:root,
 :root[data-theme='neutral'] {
   --theme-lightest: #fefdf9;
   --theme-lighter: #fefbf4;

@@ -82,7 +82,7 @@ export default function OnboardingForm() {
 
       setTheme(updatedData.theme ?? 'neutral')
       toast.success('Онбординг завершено')
-      router.push('/diary')
+      router.replace('/')
     },
     onError: () => {
       toast.error('Помилка збереження')

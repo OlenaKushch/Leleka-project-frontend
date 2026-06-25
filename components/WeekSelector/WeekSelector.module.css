@@ -1,4 +1,40 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  margin-bottom: 32px;
+}
+
+.navBtn {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--opacity-neutral-darkest-5);
+  background-color: var(--color-scheme-foreground);
+  color: var(--theme-darker);
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.navBtn:hover:not(:disabled) {
+  background-color: var(--theme-light);
+}
+
+.navBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .list {
+  flex: 1 1 auto;
+  min-width: 0;
   display: flex;
   gap: 16px;
   overflow-x: auto;
@@ -6,8 +42,6 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
   scroll-behavior: smooth;
-  margin-top: 24px;
-  margin-bottom: 32px;
   padding-bottom: 4px;
 }
 

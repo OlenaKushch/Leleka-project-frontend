@@ -16,7 +16,7 @@ export const useProtectedRoute = () => {
     const isPublic = isPublicAuthRoute(pathname)
 
     if (!isAuthenticated && !isPublic) {
-      router.replace('/auth/login')
+      router.replace('/')
     }
 
     if (isAuthenticated && isPublic) {

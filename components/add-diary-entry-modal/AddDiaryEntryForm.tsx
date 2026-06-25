@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useId, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useId, useMemo } from 'react'
 import { Field, Form, Formik, ErrorMessage, FormikHelpers } from 'formik'
 import * as Yup from 'yup'
 import toast from 'react-hot-toast'
@@ -8,6 +8,7 @@ import axios from 'axios'
 import { apiClient } from '@/lib/apiClient'
 import { Emotion, DiaryEntry } from '@/interfaces/diary'
 import { DiaryService } from '@/services/diary.service'
+import { EmotionPicker } from './EmotionPicker'
 import styles from './AddDiaryEntryForm.module.css'
 
 interface FormValues {
@@ -38,9 +39,7 @@ export default function AddDiaryEntryForm({
   setLoading,
 }: AddDiaryEntryFormProps) {
   const fieldId = useId()
-  const [availableEmotions, setAvailableEmotions] = useState<Emotion[]>([])
-  const [isEmotionsOpen, setIsEmotionsOpen] = useState(false)
-  const emotionsWrapRef = useRef<HTMLDivElement | null>(null)
+  const [availableEmotions, setAvailableEmotions] = React.useState<Emotion[]>([])
 
   useEffect(() => {
     const fetchEmotions = async () => {
@@ -70,22 +69,6 @@ export default function AddDiaryEntryForm({
     return { title: '', emotions: [], description: '' }
   }, [initialData])
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (emotionsWrapRef.current && !emotionsWrapRef.current.contains(event.target as Node)) {
-        setIsEmotionsOpen(false)
-      }
-    }
-    if (isEmotionsOpen) document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [isEmotionsOpen])
-
-  const emotionTitleById = useMemo(() => {
-    const m = new Map<string, string>()
-    for (const e of availableEmotions) m.set(e._id, e.title)
-    return m
-  }, [availableEmotions])
-
   const handleSubmit = async (values: FormValues, { setSubmitting }: FormikHelpers<FormValues>) => {
     setLoading(true)
     try {
@@ -109,11 +92,6 @@ export default function AddDiaryEntryForm({
     }
   }
 
-  const handleDropdownToggle = (e: React.MouseEvent) => {
-    e.preventDefault()
-    setIsEmotionsOpen(prev => !prev)
-  }
-
   return (
     <Formik
       initialValues={initialValues}
@@ -121,139 +99,52 @@ export default function AddDiaryEntryForm({
       onSubmit={handleSubmit}
       enableReinitialize={true}
     >
-      {({ isSubmitting, values, setFieldValue }) => {
-        const selected = values.emotions
-          .map(id => ({ id, title: emotionTitleById.get(id) }))
-          .filter((x): x is { id: string; title: string } => Boolean(x.title))
+      {({ isSubmitting, values, setFieldValue }) => (
+        <Form className={styles.form}>
+          <div className={styles.fieldGroup}>
+            <label htmlFor={`${fieldId}-title`} className={styles.label}>
+              Заголовок
+            </label>
+            <Field
+              id={`${fieldId}-title`}
+              name="title"
+              className={styles.input}
+              placeholder="Введіть заголовок запису"
+            />
+            <ErrorMessage name="title" component="div" className={styles.errorMessage} />
+          </div>
 
-        const toggleEmotion = (emotionId: string) => {
-          const exists = values.emotions.includes(emotionId)
-          const next = exists
-            ? values.emotions.filter(id => id !== emotionId)
-            : [...values.emotions, emotionId]
-          setFieldValue('emotions', next)
-        }
+          <div className={`${styles.fieldGroup} ${styles.fieldGroupCategories}`}>
+            <label className={styles.label}>Категорії</label>
+            <EmotionPicker
+              emotions={availableEmotions}
+              selectedIds={values.emotions}
+              onChange={ids => setFieldValue('emotions', ids)}
+            />
+            <ErrorMessage name="emotions" component="div" className={styles.errorMessage} />
+          </div>
 
-        return (
-          <Form className={styles.form}>
-            <div className={styles.fieldGroup}>
-              <label htmlFor={`${fieldId}-title`} className={styles.label}>
-                Заголовок
-              </label>
-              <Field
-                id={`${fieldId}-title`}
-                name="title"
-                className={styles.input}
-                placeholder="Введіть заголовок запису"
-              />
-              <ErrorMessage name="title" component="div" className={styles.errorMessage} />
-            </div>
+          <div className={`${styles.fieldGroup} ${styles.fieldGroupTextarea}`}>
+            <label htmlFor={`${fieldId}-desc`} className={styles.label}>
+              Запис
+            </label>
+            <Field
+              as="textarea"
+              id={`${fieldId}-desc`}
+              name="description"
+              className={styles.textarea}
+              placeholder="Запишіть, як ви себе відчуваєте"
+            />
+            <ErrorMessage name="description" component="div" className={styles.errorMessage} />
+          </div>
 
-            <div
-              className={`${styles.fieldGroup} ${styles.fieldGroupCategories}`}
-              ref={emotionsWrapRef}
-            >
-              <label className={styles.label}>Категорії</label>
-              <div className={styles.dropdownWrapper}>
-                <button
-                  type="button"
-                  className={`${styles.dropdownControl} ${
-                    isEmotionsOpen ? styles.dropdownControlOpen : ''
-                  }`}
-                  onClick={handleDropdownToggle}
-                >
-                  <div className={styles.dropdownValue}>
-                    {selected.length === 0 ? (
-                      <span className={styles.dropdownPlaceholder}>Оберіть категорію</span>
-                    ) : (
-                      <div className={styles.chips}>
-                        {selected.map(item => (
-                          <span key={item.id} className={styles.chip}>
-                            {item.title}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  <svg
-                    className={`${styles.chevronIcon} ${
-                      isEmotionsOpen ? styles.chevronIconOpen : ''
-                    }`}
-                    width="24"
-                    height="24"
-                  >
-                    <use href="/sprite.svg#icon-chevron_right" />
-                  </svg>
-                </button>
-                {isEmotionsOpen && (
-                  <div className={styles.dropdownPanel} onMouseDown={e => e.stopPropagation()}>
-                    <div className={styles.dropdownScroll}>
-                      {availableEmotions.map(e => {
-                        const checked = values.emotions.includes(e._id)
-                        return (
-                          <div
-                            key={e._id}
-                            className={`${styles.optionRow} ${
-                              checked ? styles.optionRowChecked : ''
-                            }`}
-                            onClick={ev => {
-                              ev.preventDefault()
-                              toggleEmotion(e._id)
-                            }}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={checked}
-                              readOnly
-                              className={styles.nativeCheckbox}
-                            />
-                            <span
-                              className={`${styles.checkboxBox} ${
-                                checked ? styles.checkboxBoxChecked : ''
-                              }`}
-                            >
-                              {checked && (
-                                <svg className={styles.checkboxTick} viewBox="0 0 24 24">
-                                  <path
-                                    d="M9.0 16.2L4.8 12l-1.4 1.4L9 19 20.6 7.4 19.2 6z"
-                                    fill="currentColor"
-                                  />
-                                </svg>
-                              )}
-                            </span>
-                            <span className={styles.optionText}>{e.title}</span>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-                )}
-              </div>
-              <ErrorMessage name="emotions" component="div" className={styles.errorMessage} />
-            </div>
-
-            <div className={`${styles.fieldGroup} ${styles.fieldGroupTextarea}`}>
-              <label htmlFor={`${fieldId}-desc`} className={styles.label}>
-                Запис
-              </label>
-              <Field
-                as="textarea"
-                id={`${fieldId}-desc`}
-                name="description"
-                className={styles.textarea}
-                placeholder="Запишіть, як ви себе відчуваєте"
-              />
-              <ErrorMessage name="description" component="div" className={styles.errorMessage} />
-            </div>
-
-            <div className={styles.buttonGroup}>
-              <button type="submit" disabled={isSubmitting} className={styles.buttonPrimary}>
-                {isSubmitting ? 'Збереження...' : 'Зберегти'}
-              </button>
-            </div>
-          </Form>
-        )
-      }}
+          <div className={styles.buttonGroup}>
+            <button type="submit" disabled={isSubmitting} className={styles.buttonPrimary}>
+              {isSubmitting ? 'Збереження...' : 'Зберегти'}
+            </button>
+          </div>
+        </Form>
+      )}
     </Formik>
   )
 }

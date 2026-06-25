@@ -74,6 +74,12 @@
 
   .column {
     flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .left {
+    flex: 1 1 auto;
+    min-width: 0;
   }
 
   .left > :first-child {
@@ -84,17 +90,17 @@
     flex: 0 0 390px;
   }
 
-  .dashboardCard {
-    max-height: 220px;
+  /* Картки ростуть під свій вміст: жодного фіксованого max-height,
+     щоб «Малюк сьогодні» не обрізався скролом і «Порада для мами» була видима. */
+  .dashboardCard,
+  .dashboardCardTall {
+    min-width: 0;
+  }
+
+  /* Лише список завдань лишається прокручуваним, бо може бути довгим. */
+  .dashboardCardTasks {
+    max-height: 420px;
     overflow-y: auto;
     scrollbar-width: thin;
-  }
-
-  .dashboardCardTall {
-    max-height: 420px;
-  }
-
-  .dashboardCardTasks {
-    max-height: 360px;
   }
 }
