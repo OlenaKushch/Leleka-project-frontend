@@ -134,6 +134,34 @@
   gap: 8px;
 }
 
+.deleteBtn {
+  margin-left: auto;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border: none;
+  background-color: transparent;
+  color: var(--theme-darker, #655e51);
+  cursor: pointer;
+  border-radius: 8px;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.deleteBtn:hover {
+  color: var(--color-danger, #c60000);
+  transform: scale(1.1);
+}
+
+.deleteBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .done {
   color: #000;
   text-decoration: line-through;

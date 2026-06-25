@@ -24,3 +24,7 @@ export const updateTasksStatus = async (taskId: string, isDone: boolean): Promis
   const { data } = await apiClient.patch<BackendTask>(`/tasks/${taskId}/status`, { isDone })
   return mapBackendTask(data)
 }
+
+export const deleteTask = async (taskId: string): Promise<void> => {
+  await apiClient.delete(`/tasks/${taskId}`)
+}

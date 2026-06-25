@@ -81,7 +81,8 @@
     display: grid;
     grid-template-columns: 273px 1fr;
     column-gap: 16px;
-    row-gap: 24px;
+    row-gap: 16px;
+    align-items: start;
   }
 
   .title {
@@ -89,12 +90,21 @@
   }
 
   .imageWrapper {
+    grid-column: 1;
     height: 194px;
     border-radius: 24px;
   }
 
-  .stats {
+  /* Підпис-аналогія стоїть поряд із зображенням, а решта інформації
+     (характеристики й опис) розтягується на всю ширину блоку. */
+  .analogy {
+    grid-column: 2;
     align-self: center;
+  }
+
+  .stats {
+    grid-column: 1 / -1;
+    margin-bottom: 0;
   }
 
   .text {
@@ -105,7 +115,7 @@
 /* DESKTOP */
 @media (min-width: 1440px) {
   .card {
-    max-width: 642px;
+    max-width: none;
   }
   .text,
   .stats p {

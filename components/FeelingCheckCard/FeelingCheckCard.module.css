@@ -3,8 +3,45 @@
   border-radius: 32px;
   padding: 24px;
   width: 335px;
-  height: 193px;
+  min-height: 193px;
   background: var(--theme-lighter);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.feelingcheck_emotions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.feelingcheck_emotions_label {
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--color-scheme-text);
+}
+
+.feelingcheck_chips {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.feelingcheck_chip {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--theme-light);
+  color: var(--color-scheme-text);
+  font-family: var(--font-family);
+  font-size: 13px;
+  line-height: 1.4;
 }
 
 .feelingcheck_title {
@@ -34,6 +71,7 @@
   border-bottom: 4px solid var(--theme-main) !important;
   border-radius: 100px;
 
+  margin-top: auto;
   width: 225px;
   height: 42px;
   padding: 10px 24px;
@@ -91,7 +129,7 @@
 @media (min-width: 1280px) {
   .feelingcheck_section {
     width: 390px;
-    height: 210px;
+    min-height: 210px;
   }
 
   .feelingcheck_title {

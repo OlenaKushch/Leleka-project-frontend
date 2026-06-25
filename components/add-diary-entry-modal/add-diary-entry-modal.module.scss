@@ -21,14 +21,18 @@
 .content {
   max-width: 520px;
   width: 100%;
+  max-height: min(90vh, 760px);
   background: #fff;
   border-radius: 32px;
   padding: 40px;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--theme-main) rgba(0, 0, 0, 0.12);
 }
 
 .closeBtn {
